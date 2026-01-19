@@ -40,7 +40,6 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
 
   const handleDownload = () => {
     setIsImporting(true);
-    // Force a slight delay for "encryption" effect
     setTimeout(() => {
       window.location.href = `./backend/download.php`;
       setIsImporting(false);
@@ -50,8 +49,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const isMaster = subscription.id === 'master';
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col gap-10">
-      {/* Header Profile - Elite Styling */}
+    <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col gap-10 animate-fade-in">
+      {/* User Status Bar */}
       <div className="bg-[#0f172a] p-10 rounded-[3rem] border-2 border-white/5 flex flex-col md:flex-row justify-between items-center shadow-3xl">
         <div className="flex items-center gap-8">
           <div className="w-20 h-20 rounded-3xl bg-blue-600 flex items-center justify-center font-black text-3xl text-white shadow-xl shadow-blue-500/20">
@@ -72,17 +71,17 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-10">
-        {/* Protocol Retrieval Node */}
+        {/* Terminal Retrieval Section */}
         <div className="bg-[#0f172a] p-12 rounded-[3rem] border-2 border-white/5 shadow-3xl flex flex-col justify-center text-center">
-          <h3 className="text-xl font-black text-white uppercase mb-8 tracking-widest">Protocol Retrieval</h3>
+          <h3 className="text-xl font-black text-white uppercase mb-8 tracking-widest">Protocol Retrieval Node</h3>
           {subscription.status === 'ACTIVE' ? (
             <div className="flex flex-col gap-6">
               <button 
                 onClick={handleDownload}
                 disabled={isImporting}
-                className={`px-10 py-7 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl transition-all active:scale-95 disabled:opacity-50 ${isMaster ? 'bg-purple-600 text-white hover:shadow-purple-500/20' : 'bg-emerald-600 text-white hover:shadow-emerald-500/20'}`}
+                className={`px-10 py-7 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl transition-all active:scale-95 disabled:opacity-50 ${isMaster ? 'bg-purple-600 text-white shadow-purple-500/20' : 'bg-blue-600 text-white shadow-blue-500/20'}`}
               >
-                {isImporting ? 'ENCRYPTING PAYLOAD...' : isMaster ? 'DOWNLOAD MASTER .SIP' : 'DOWNLOAD .SIP PAYLOAD'}
+                {isImporting ? 'ENCRYPTING PAYLOAD...' : isMaster ? 'DOWNLOAD MASTER .SIP' : 'GET LATEST CONFIG'}
               </button>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                 {isMaster ? 'ARCHITECT LICENSE: UNRESTRICTED' : 'AUTHORIZED FOR SINGLE NODE ONLY'}
@@ -95,40 +94,46 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
               </div>
               <p className="text-orange-500 font-black uppercase text-xs tracking-widest">PENDING VERIFICATION</p>
               <p className="text-[9px] text-slate-600 uppercase font-black text-center max-w-xs">
-                Your payment ID has been sent to the Admin. Secure resources will unlock upon confirmation.
+                Payments are verified manually by the Admin Node. Your terminal will unlock automatically.
               </p>
             </div>
           )}
         </div>
 
-        {/* Configuration Details - Host requirement fulfilled here */}
+        {/* Configuration Details Section - PROMINENT DOMAIN DISPLAY */}
         <div className="bg-[#0f172a] p-12 rounded-[3rem] border-2 border-white/5 shadow-3xl">
-          <h3 className="text-xl font-black text-white uppercase mb-8 tracking-widest">Protocol Specifications</h3>
-          {subscription.status === 'ACTIVE' ? (
-            <div className="space-y-6">
-              <div className="bg-slate-950/60 p-6 rounded-2xl border border-white/5 group hover:border-blue-500/30 transition-all">
-                 <p className="text-[9px] font-black text-slate-500 uppercase mb-2 tracking-widest">Configuration Host</p>
-                 <p className="text-base font-black text-blue-400 font-mono">petzeustech.duckdns.org</p>
-              </div>
-              <div className="bg-slate-950/60 p-6 rounded-2xl border border-white/5 group hover:border-blue-500/30 transition-all">
-                 <p className="text-[9px] font-black text-slate-500 uppercase mb-2 tracking-widest">Node Encryption</p>
-                 <p className="text-base font-black text-blue-400 font-mono">AES-256 GCM Tunnel</p>
-              </div>
-              {isMaster && (
-                <div className="bg-purple-600/10 p-6 rounded-2xl border border-purple-500/20">
-                   <p className="text-[10px] font-black text-purple-400 uppercase mb-2 tracking-widest">Architect Privilege</p>
-                   <p className="text-[11px] text-white font-bold leading-relaxed uppercase">
-                     FULL FILE CREATION MENTORSHIP ACTIVE. USE <span className="text-purple-400">petzeustech.duckdns.org</span> FOR ALL CUSTOM SNI/HOST SETTINGS.
-                   </p>
-                </div>
-              )}
+          <h3 className="text-xl font-black text-white uppercase mb-8 tracking-widest">System Node Information</h3>
+          <div className="space-y-6">
+            <div className="bg-slate-950/80 p-8 rounded-[2rem] border-2 border-blue-500/30 flex flex-col gap-2 shadow-2xl">
+               <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.3em]">Primary Configuration Host</p>
+               <p className="text-2xl font-black text-white font-mono tracking-tight">petzeustech.duckdns.org</p>
+               <div className="h-1 w-full bg-blue-500/10 rounded-full mt-2 relative overflow-hidden">
+                 <div className="absolute inset-0 bg-blue-500 w-1/3 animate-[shimmer_2s_infinite]"></div>
+               </div>
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full opacity-10 py-12">
-               <svg className="w-16 h-16 text-white mb-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
-               <p className="text-[10px] font-black text-white uppercase tracking-[0.5em]">LOCKED CONTENT</p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-950/40 p-6 rounded-2xl border border-white/5">
+                 <p className="text-[9px] font-black text-slate-500 uppercase mb-2 tracking-widest">Node Status</p>
+                 <p className={`text-xs font-black uppercase ${subscription.status === 'ACTIVE' ? 'text-emerald-500' : 'text-slate-400'}`}>
+                   {subscription.status === 'ACTIVE' ? 'CONNECTED' : 'DISCONNECTED'}
+                 </p>
+              </div>
+              <div className="bg-slate-950/40 p-6 rounded-2xl border border-white/5">
+                 <p className="text-[9px] font-black text-slate-500 uppercase mb-2 tracking-widest">Protocol Version</p>
+                 <p className="text-xs font-black text-white uppercase font-mono">v15.7.0-STABLE</p>
+              </div>
             </div>
-          )}
+
+            {isMaster && (
+              <div className="bg-purple-600/10 p-8 rounded-[2rem] border-2 border-purple-500/30">
+                 <p className="text-[11px] font-black text-purple-400 uppercase mb-4 tracking-widest">Architect Access Protocol</p>
+                 <p className="text-[11px] text-white/80 font-bold leading-relaxed uppercase">
+                   YOUR MASTER LICENSE IS ACTIVE. USE <span className="text-purple-400">petzeustech.duckdns.org</span> IN THE CUSTOM SNI/HOST SETTINGS OF YOUR GENERATOR TOOLS.
+                 </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

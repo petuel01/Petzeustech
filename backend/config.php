@@ -1,12 +1,12 @@
 <?php
-// PETZEUSTECH NETWORKS - SYSTEM CORE v15.5
+// PETZEUSTECH NETWORKS - SYSTEM CORE v15.7
 // Production Host: petzeustech.duckdns.org
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Security Headers for Production Environment
+// Security Headers
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('X-XSS-Protection: 1; mode=block');
@@ -31,7 +31,7 @@ if (!$conn) {
 define('SYSTEM_DOMAIN', 'petzeustech.duckdns.org');
 define('UPLOAD_DIR', '/var/www/petzeustech_uploads/');
 define('ADMIN_EMAIL', 'admin@petzeustech.com');
-define('SYSTEM_VERSION', '15.5.0');
+define('SYSTEM_VERSION', '15.7.0');
 
 /**
  * Standardized JSON API Response
