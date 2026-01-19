@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, UserRole, SubscriptionStatus } from './types';
+import { User, UserRole } from './types';
 import LandingPage from './components/LandingPage';
 import UserDashboard from './components/UserDashboard';
 import AdminDashboard from './components/AdminDashboard';

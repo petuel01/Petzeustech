@@ -16,50 +16,74 @@ interface PendingPayment {
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
-  const [activeTab, setActiveTab] = useState<'users' | 'files' | 'payments'>('files');
-  
-  const [plans] = useState<SubscriptionPlan[]>([
-    { id: 'standard', name: 'Standard', days: 7, price: 1000 },
-    { id: 'pro', name: 'Pro Elite', days: 15, price: 1500 },
-    { id: 'elite', name: 'Elite Access', days: 30, price: 3000 },
-  ]);
-
-  const [pendingPayments, setPendingPayments] = useState<PendingPayment[]>(() => {
-    const saved = localStorage.getItem('mock_pending_payments');
-    return saved ? JSON.parse(saved) : [
-      { id: 'pay_1', userEmail: 'john@example.com', planName: 'Elite Access', amount: 3000, transId: 'TXN84729384', date: '2024-12-24' }
-    ];
-  });
+  const [activeTab, setActiveTab] = useState<'files' | 'payments'>('payments');
+  const [pendingPayments, setPendingPayments] = useState<PendingPayment[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<ConfigFile[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('mock_pending_payments', JSON.stringify(pendingPayments));
-  }, [pendingPayments]);
+    fetchPayments();
+    fetchFiles();
+  }, []);
 
-  const approvePayment = (id: string) => {
-    if (confirm("APPROVE SYNC: Have you verified this transaction in your MoMo app?")) {
-      setPendingPayments(pendingPayments.filter(p => p.id !== id));
-      alert("USER ACTIVATED: Node clearance granted.");
+  const fetchPayments = async () => {
+    try {
+      const res = await fetch('./backend/get_payments.php'); // You would create this simple GET wrapper
+      const data = await res.json();
+      setPendingPayments(data || []);
+    } catch (err) {
+      // Simulation for preview if backend not yet hit
+      setPendingPayments([]);
     }
   };
 
-  const [uploadedFiles, setUploadedFiles] = useState<ConfigFile[]>(() => {
-    const saved = localStorage.getItem('mock_files');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const fetchFiles = async () => {
+    // Similar fetch for files
+  };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAction = async (id: string, action: 'APPROVE' | 'REJECT') => {
+    if (!confirm(`Are you sure you want to ${action} this transaction?`)) return;
+    
+    setIsLoading(true);
+    try {
+      const res = await fetch('./backend/approve_payment_api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_id: id, action })
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert(result.message);
+        fetchPayments();
+      }
+    } catch (err) {
+      alert("Terminal Sync Error. Check Backend.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, planId: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const newFile: ConfigFile = {
-      id: 'f' + Date.now(),
-      fileName: file.name,
-      planId: 'elite',
-      cycleStart: new Date().toISOString().split('T')[0],
-      cycleEnd: new Date(Date.now() + 4 * 86400000).toISOString().split('T')[0],
-      uploadDate: new Date().toISOString().split('T')[0]
-    };
-    setUploadedFiles([newFile, ...uploadedFiles]);
-    alert("NODE BROADCAST STARTED");
+    
+    const formData = new FormData();
+    formData.append('config_file', file);
+    formData.append('plan_id', planId);
+
+    try {
+      const res = await fetch('./backend/upload_api.php', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert("NODE BROADCASTED SUCCESSFULLY");
+        fetchFiles();
+      }
+    } catch (err) {
+      alert("Upload Interrupted.");
+    }
   };
 
   return (
@@ -70,7 +94,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
       </header>
 
       <div className="flex bg-slate-900/40 p-2 rounded-[2rem] border border-white/5 w-fit">
-        {(['users', 'files', 'payments'] as const).map((tab) => (
+        {(['payments', 'files'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -84,26 +108,27 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
       <div className="glass rounded-[3rem] min-h-[500px] overflow-hidden p-10">
         {activeTab === 'payments' && (
           <div className="flex flex-col gap-8">
-            <h3 className="text-3xl font-black uppercase text-white">Verification Queue</h3>
+            <h3 className="text-3xl font-black uppercase text-white">Manual Verification Queue</h3>
             <div className="grid gap-4">
-              {pendingPayments.length === 0 && <p className="text-slate-600 font-black uppercase tracking-widest text-center py-20">No pending verification requests.</p>}
+              {pendingPayments.length === 0 && (
+                <div className="text-center py-20">
+                  <p className="text-slate-600 font-black uppercase tracking-widest mb-4">No active verification requests.</p>
+                  <button onClick={fetchPayments} className="text-blue-500 font-black text-[10px] uppercase">Refresh Data</button>
+                </div>
+              )}
               {pendingPayments.map(p => (
-                <div key={p.id} className="bg-slate-950/40 border border-white/5 rounded-3xl p-8 flex justify-between items-center group">
-                  <div>
+                <div key={p.id} className="bg-slate-950/40 border border-white/5 rounded-3xl p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="flex-grow">
                     <p className="font-black text-white text-xl uppercase tracking-tighter">{p.userEmail}</p>
                     <div className="flex gap-4 mt-2">
                       <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Plan: {p.planName}</span>
-                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">ID: {p.transId}</span>
+                      <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">TXN: {p.transId}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-6">
-                    <p className="text-2xl font-black text-white">{p.amount} FRS</p>
-                    <button 
-                      onClick={() => approvePayment(p.id)}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all"
-                    >
-                      Approve
-                    </button>
+                  <div className="flex items-center gap-4">
+                    <p className="text-2xl font-black text-white mr-4">{p.amount} FRS</p>
+                    <button onClick={() => handleAction(p.id, 'APPROVE')} className="bg-emerald-600 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">Verify</button>
+                    <button onClick={() => handleAction(p.id, 'REJECT')} className="bg-red-600/10 text-red-500 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">Decline</button>
                   </div>
                 </div>
               ))}
@@ -112,23 +137,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
         )}
 
         {activeTab === 'files' && (
-           <div className="grid lg:grid-cols-2 gap-20">
-              <div className="flex flex-col gap-10">
-                 <h3 className="text-3xl font-black uppercase text-white">Broadcast Control</h3>
-                 <div className="border-2 border-dashed border-white/10 rounded-[2rem] p-20 text-center bg-slate-950/50 group hover:border-blue-500/50 transition-all relative">
-                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileUpload} />
-                    <p className="font-black uppercase tracking-widest text-slate-400">Deploy .sip Node</p>
-                 </div>
-              </div>
-              <div className="flex flex-col gap-6">
-                 <h4 className="text-2xl font-black uppercase text-white">Active Nodes</h4>
-                 {uploadedFiles.map(f => (
-                   <div key={f.id} className="p-6 bg-slate-950/40 border border-white/5 rounded-2xl flex justify-between items-center">
-                     <p className="font-black text-white uppercase">{f.fileName}</p>
-                     <span className="text-[10px] font-black text-emerald-500 animate-pulse">Online</span>
+           <div className="grid lg:grid-cols-3 gap-8">
+              {['standard', 'pro', 'elite'].map(tier => (
+                <div key={tier} className="glass p-8 rounded-[2.5rem] flex flex-col gap-6 border-white/5 bg-slate-950/20">
+                   <h4 className="text-xl font-black uppercase text-white">{tier} Payload</h4>
+                   <div className="border-2 border-dashed border-white/10 rounded-2xl p-10 text-center relative hover:border-blue-500/50 transition-all">
+                      <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, tier)} />
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Update Node</p>
                    </div>
-                 ))}
-              </div>
+                   <div className="bg-slate-950 p-4 rounded-xl border border-white/5">
+                      <p className="text-[9px] font-black text-slate-600 uppercase mb-1">Current Active</p>
+                      <p className="text-xs font-bold text-white truncate">Searching Node...</p>
+                   </div>
+                </div>
+              ))}
            </div>
         )}
       </div>

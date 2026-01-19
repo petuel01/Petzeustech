@@ -38,6 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onDashboard, o
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] glass border-b border-white/5 px-6 py-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Logo Section */}
         <div 
           className="flex items-center gap-3 cursor-pointer group"
           onClick={onHome}
@@ -55,6 +56,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onDashboard, o
           </div>
         </div>
 
+        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <button 
@@ -75,6 +77,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onDashboard, o
           )}
         </div>
 
+        {/* Desktop User / Auth Action */}
         <div className="hidden lg:flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-3 pl-4 border-l border-white/10">
@@ -100,6 +103,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onDashboard, o
           )}
         </div>
 
+        {/* Hamburger Toggle (Mobile) */}
         <button 
           className="lg:hidden w-11 h-11 flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl bg-white/5 border border-white/10 relative z-[101]"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -111,6 +115,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onDashboard, o
         </button>
       </div>
 
+      {/* Mobile Menu Sidebar/Overlay */}
       <div className={`fixed inset-0 z-[90] lg:hidden transition-all duration-500 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl" onClick={() => setIsMenuOpen(false)}></div>
         <div className={`absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-slate-900 border-l border-white/10 p-10 flex flex-col gap-10 transition-transform duration-500 shadow-3xl ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
