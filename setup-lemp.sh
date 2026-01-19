@@ -1,56 +1,70 @@
 #!/bin/bash
-# PETZEUSTECH UNLIMITED NETWORKS - PRODUCTION DEPLOYMENT v4.0
+# PETZEUSTECH UNLIMITED NETWORKS - SMART DEPLOYMENT v5.0
+# Optimized for Ubuntu (Contabo VPS)
+
 set -e
 
-RED='\033[0;31m'
+# Visuals
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+RED='\033[0;31m'
 NC='\033[0m'
 
 clear
-echo -e "${BLUE}PETZEUSTECH NETWORKS - CONTABO VPS NODE SYNC${NC}"
+echo -e "${BLUE}==================================================${NC}"
+echo -e "${BLUE}   PETZEUSTECH NETWORKS - SMART VPS DEPLOYER      ${NC}"
+echo -e "${BLUE}==================================================${NC}"
 
-# Inputs
-read -p "Domain (portal.yourdomain.com): " DOMAIN
-read -p "DB Name: " DB_NAME
-read -p "DB User: " DB_USER
-read -s -p "DB Password: " DB_PASS
-echo -e "\n"
-read -p "Admin Email: " ADMIN_EMAIL
+# 1. User Inputs
+read -p "Target Domain (e.g. portal.petzeustech.com): " DOMAIN
+read -p "DB Password for new user: " DB_PASS
 
-# Install Stack
+# 2. System Prep
+echo -e "${BLUE}[1/6] Installing LEMP Architecture...${NC}"
 apt update && apt upgrade -y
-apt install nginx mariadb-server php-fpm php-mysql php-gd php-curl certbot python3-certbot-nginx -y
+apt install -y nginx mariadb-server php-fpm php-mysql php-gd php-curl certbot python3-certbot-nginx zip unzip
 
-# DB Setup
+# 3. Smart Relocation
+echo -e "${BLUE}[2/6] Orchestrating File System...${NC}"
+TARGET_DIR="/var/www/petzeustech"
+CURRENT_DIR=$(pwd)
+
+# Create the target structure
+mkdir -p "$TARGET_DIR/uploads"
+mkdir -p "$TARGET_DIR/public"
+
+# If we are not currently in the target dir, move files there
+if [ "$CURRENT_DIR" != "$TARGET_DIR/public" ] && [ "$CURRENT_DIR" != "$TARGET_DIR" ]; then
+    echo -e "${BLUE}Relocating project from $CURRENT_DIR to $TARGET_DIR...${NC}"
+    # Move everything to public folder (standard for web security)
+    cp -r ./* "$TARGET_DIR/public/"
+    # Move the backend folder to its proper place if it's not already inside public
+    # (In our structure, it's already inside public)
+fi
+
+# 4. Database Initialization
+echo -e "${BLUE}[3/6] Configuring MariaDB Cluster...${NC}"
+DB_NAME="petzeustech_db"
+DB_USER="zeus_admin"
+
 mysql -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;"
-mysql -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASS}';"
+mysql -e "CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASS}';"
+mysql -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost';"
 mysql -e "FLUSH PRIVILEGES;"
 
-# Create Protected Uploads (Above Public Root)
-mkdir -p /var/www/petzeustech/uploads
-mkdir -p /var/www/petzeustech/public
+# Import schema
+if [ -f "$TARGET_DIR/public/backend/schema.sql" ]; then
+    mysql "$DB_NAME" < "$TARGET_DIR/public/backend/schema.sql"
+    echo -e "${GREEN}Database schema injected.${NC}"
+fi
 
-# Generate config.php
-cat <<EOF > /var/www/petzeustech/public/backend/config.php
-<?php
-session_start();
-\$dbhost = 'localhost';
-\$dbuser = '$DB_USER';
-\$dbpass = '$DB_PASS';
-\$dbname = '$DB_NAME';
-\$admin_email = '$ADMIN_EMAIL';
-\$conn = mysqli_connect(\$dbhost, \$dbuser, \$dbpass, \$dbname);
-if (!\$conn) { die("Database cluster offline."); }
-?>
-EOF
-
-# Nginx Config
+# 5. Nginx Gateway Config
+echo -e "${BLUE}[4/6] Mapping Nginx Virtual Host...${NC}"
 cat <<EOF > /etc/nginx/sites-available/petzeustech
 server {
     listen 80;
     server_name $DOMAIN;
-    root /var/www/petzeustech/public;
+    root $TARGET_DIR/public;
     index index.html index.php;
 
     location / {
@@ -59,27 +73,34 @@ server {
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock; # Adjust version if needed
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
     }
-    
-    # Block direct access to uploads if moved into public
-    location /uploads/ {
+
+    # Block access to the secure uploads folder
+    location /uploads {
         deny all;
-        return 403;
     }
 }
 EOF
 
 ln -sf /etc/nginx/sites-available/petzeustech /etc/nginx/sites-enabled/
+rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl restart nginx
 
-# Permissions
-chown -R www-data:www-data /var/www/petzeustech
-chmod -R 755 /var/www/petzeustech
-chmod -R 775 /var/www/petzeustech/uploads
+# 6. Permissions & Security
+echo -e "${BLUE}[5/6] Hardening Permissions...${NC}"
+chown -R www-data:www-data $TARGET_DIR
+chmod -R 755 $TARGET_DIR
+chmod -R 775 $TARGET_DIR/uploads
 
-# SSL
-certbot --nginx -d $DOMAIN --non-interactive --agree-tos --register-unsafely-without-email
+# 7. SSL via Let's Encrypt
+echo -e "${BLUE}[6/6] Securing with SSL...${NC}"
+# Note: This will fail if DNS is not yet pointed to the VPS IP
+certbot --nginx -d $DOMAIN --non-interactive --agree-tos -m admin@$DOMAIN --redirect || echo -e "${RED}SSL Failed. Ensure DNS A-Record points to this IP.${NC}"
 
-echo -e "${GREEN}DEPLOYMENT PROTOCOL COMPLETE.${NC}"
-echo -e "Upload your React build files to /var/www/petzeustech/public"
+echo -e "${GREEN}==================================================${NC}"
+echo -e "${GREEN}DEPLOYMENT COMPLETE${NC}"
+echo -e "${GREEN}Portal: https://$DOMAIN${NC}"
+echo -e "${GREEN}Files Location: $TARGET_DIR/public${NC}"
+echo -e "${GREEN}Secure Storage: $TARGET_DIR/uploads${NC}"
+echo -e "${GREEN}==================================================${NC}"
