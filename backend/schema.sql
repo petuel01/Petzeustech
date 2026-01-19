@@ -1,9 +1,8 @@
 
--- PETZEUSTECH NETWORKS - PRODUCTION SCHEMA v4.1
+-- PETZEUSTECH NETWORKS - PRODUCTION SCHEMA v6.1
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Users Table
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -16,17 +15,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Plans Table
 CREATE TABLE IF NOT EXISTS `plans` (
   `id` varchar(50) NOT NULL,
   `name` varchar(100) NOT NULL,
   `days` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `is_trial` tinyint(1) DEFAULT 0,
+  `network` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Subscriptions Table
 CREATE TABLE IF NOT EXISTS `subscriptions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -37,7 +34,6 @@ CREATE TABLE IF NOT EXISTS `subscriptions` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Manual Payments Log
 CREATE TABLE IF NOT EXISTS `payments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -49,7 +45,6 @@ CREATE TABLE IF NOT EXISTS `payments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Configuration Files
 CREATE TABLE IF NOT EXISTS `files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `file_name` varchar(255) NOT NULL,
@@ -58,11 +53,14 @@ CREATE TABLE IF NOT EXISTS `files` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Initialize Default Plans (Updated prices and tiers)
-INSERT INTO `plans` (`id`, `name`, `days`, `price`, `is_trial`) VALUES
-('basic', 'Basic Plan', 3, 500.00, 0),
-('standard', 'Standard Plan', 7, 1000.00, 0),
-('pro', 'Pro Elite Plan', 15, 1500.00, 0),
-('elite', 'Elite Access Plan', 30, 2500.00, 0);
+-- Unified Plan Seeding with File Creation Mastery
+INSERT INTO `plans` (`id`, `name`, `days`, `price`, `network`) VALUES
+('trial', '24H Trial', 1, 0.00, 'ORANGE'),
+('basic', 'Basic Tier', 3, 500.00, 'ORANGE'),
+('standard', 'Standard Tier', 7, 1000.00, 'ORANGE'),
+('pro', 'Pro Elite', 15, 1500.00, 'ORANGE'),
+('mtn_lite', 'MTN Lite', 15, 500.00, 'MTN'),
+('mtn_monthly', 'MTN Monthly', 30, 1000.00, 'MTN'),
+('master', 'File Creation Mastery', 9999, 15000.00, 'MTN');
 
 SET FOREIGN_KEY_CHECKS = 1;
