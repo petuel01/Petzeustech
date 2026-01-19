@@ -59,17 +59,25 @@ const App: React.FC = () => {
         {renderContent()}
       </main>
 
-      <footer className="bg-slate-900 py-12 px-6 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">P</div>
-            <span className="text-xl font-bold tracking-tight">PETZEUSTECH<span className="text-blue-500">NETWORKS</span></span>
+      <footer className="bg-slate-900 py-20 px-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-blue-500/20">P</div>
+              <div className="flex flex-col -gap-1">
+                <span className="text-2xl font-black tracking-tighter uppercase leading-none">PETZEUSTECH</span>
+                <span className="text-[10px] font-black text-blue-500 tracking-[0.2em] uppercase leading-none">UNLIMITED NETWORKS</span>
+              </div>
+            </div>
+            <p className="text-slate-500 text-sm max-w-sm font-medium leading-relaxed">Beyond network limits. The global standard for high-performance tunneling configurations and network architecture mastery.</p>
           </div>
-          <p className="text-slate-400 text-sm">© 2024 PetZeusTech Networks. All rights reserved.</p>
-          <div className="flex gap-6 text-slate-400 text-sm">
-            <a href="#" className="hover:text-blue-400">Terms</a>
-            <a href="#" className="hover:text-blue-400">Privacy</a>
-            <a href="#" className="hover:text-blue-400">Support</a>
+          <div className="flex flex-col md:items-end gap-6">
+            <div className="flex gap-10 text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">
+              <a href="#" className="hover:text-blue-400 transition-colors">Terms of Matrix</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">Privacy Shield</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">Support Portal</a>
+            </div>
+            <p className="text-slate-600 text-[10px] font-black uppercase tracking-widest">© 2024 PETZEUSTECH UNLIMITED NETWORKS. ALL RIGHTS RESERVED.</p>
           </div>
         </div>
       </footer>

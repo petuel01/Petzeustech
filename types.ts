@@ -20,6 +20,8 @@ export interface User {
   status: 'active' | 'blocked';
   profilePic?: string;
   isTrialUsed?: boolean;
+  hasSeenTutorial?: boolean;
+  hasDownloaded?: boolean; // New flag for tutorial gating
 }
 
 export interface SubscriptionPlan {
@@ -28,30 +30,22 @@ export interface SubscriptionPlan {
   price: number;
   name: string;
   isTrial?: boolean;
+  isEducational?: boolean;
 }
 
-export interface Subscription {
+export interface TutorialStep {
   id: string;
-  userId: string;
-  planId: string;
-  startDate: string;
-  expiryDate: string;
-  status: SubscriptionStatus;
-}
-
-export interface PaymentRecord {
-  id: string;
-  userId: string;
-  amount: number;
-  transactionId: string;
-  status: 'pending' | 'approved' | 'rejected';
-  date: string;
+  order: number;
+  title: string;
+  description: string;
+  mediaUrl?: string;
+  mediaType: 'image' | 'video';
 }
 
 export interface ConfigFile {
   id: string;
   fileName: string;
-  planId: string; // Linked to a specific plan (including Trial)
+  planId: string;
   cycleStart: string;
   cycleEnd: string;
   uploadDate: string;

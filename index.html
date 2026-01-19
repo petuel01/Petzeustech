@@ -4,7 +4,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PetZeusTech Networks | Premium SocksIP Access</title>
+  
+  <!-- SEO CORE -->
+  <title>PetZeusTech Networks | High-Speed SocksIP & Premium Internet Solutions</title>
+  <meta name="description" content="Unlock unlimited internet speed with PetZeusTech Networks. Premium SocksIP configs, automated 4-day refreshes, and expert-led file creation mentorship.">
+  <meta name="keywords" content="SocksIP, High Speed Internet, VPN Config, PetZeusTech, Free Internet, Mentorship, SocksIP Tutorial, Tunneling">
+  <meta name="author" content="PetZeusTech">
+  
+  <!-- OPEN GRAPH / SOCIAL -->
+  <meta property="og:title" content="PetZeusTech Networks - Beyond Limits">
+  <meta property="og:description" content="The ultimate portal for high-performance SocksIP configurations. Join our community for daily updates.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200">
+  <meta property="og:url" content="https://petzeustech.net">
+  <meta name="twitter:card" content="summary_large_image">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -12,28 +25,32 @@
       font-family: 'Plus Jakarta Sans', sans-serif; 
       background-color: #020617;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
+        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.1) 0px, transparent 50%);
       min-height: 100vh;
       color: #f8fafc;
     }
     .glass { 
       background: rgba(15, 23, 42, 0.7); 
-      backdrop-filter: blur(16px); 
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px); 
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .tech-bg {
-      background-image: url('https://www.transparenttextures.com/patterns/hexellence.png');
-      opacity: 0.05;
-      pointer-events: none;
+    .text-glow { text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #4338ca 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .hero-gradient {
-      background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+    .btn-primary:hover {
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
     }
-    .btn-glow:hover {
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
     }
+    .animate-float { animation: float 6s ease-in-out infinite; }
   </style>
 <script type="importmap">
 {
@@ -46,7 +63,6 @@
 </script>
 </head>
 <body class="selection:bg-blue-500/30 overflow-x-hidden">
-  <div class="fixed inset-0 tech-bg z-0"></div>
   <div id="root" class="relative z-10"></div>
 </body>
 </html>
