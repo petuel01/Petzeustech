@@ -1,20 +1,25 @@
 <?php
 // PETZEUSTECH NETWORKS - CORE SYSTEM CONFIG
-session_start();
+// This file is automatically synchronized with the setup-lemp.sh environment.
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Database Infrastructure
 $dbhost = 'localhost';
-$dbuser = 'zeus_admin'; 
-$dbpass = ''; // User will set this during setup-lemp.sh
+$dbuser = 'zeus_admin'; // Updated to match script
+$dbpass = ''; // User sets this during deployment
 $dbname = 'petzeustech_db';
 
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
 if (!$conn) {
-    die(json_encode(["error" => "Network Cluster Offline"]));
+    header('Content-Type: application/json');
+    die(json_encode(["error" => "Network Cluster Offline (DB Connection Failed)"]));
 }
 
-// Security Paths - Absolute path to folder outside web root
+// Security Paths - Mapped to /var/www/petzeustech
 define('UPLOAD_DIR', '/var/www/petzeustech/uploads/');
 define('ADMIN_EMAIL', 'admin@petzeustech.com');
 

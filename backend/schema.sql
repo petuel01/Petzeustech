@@ -1,5 +1,5 @@
 
--- PETZEUSTECH NETWORKS - PRODUCTION SCHEMA v4.0
+-- PETZEUSTECH NETWORKS - PRODUCTION SCHEMA v4.1
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -58,10 +58,11 @@ CREATE TABLE IF NOT EXISTS `files` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Initialize Default Plans
+-- Initialize Default Plans (Updated prices and tiers)
 INSERT INTO `plans` (`id`, `name`, `days`, `price`, `is_trial`) VALUES
-('standard', 'Standard Node', 7, 1000.00, 0),
-('pro', 'Pro Elite Node', 15, 1500.00, 0),
-('elite', 'Elite Access Node', 30, 3000.00, 0);
+('basic', 'Basic Plan', 3, 500.00, 0),
+('standard', 'Standard Plan', 7, 1000.00, 0),
+('pro', 'Pro Elite Plan', 15, 1500.00, 0),
+('elite', 'Elite Access Plan', 30, 2500.00, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
