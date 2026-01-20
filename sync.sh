@@ -1,41 +1,41 @@
 #!/bin/bash
-# PETZEUSTECH FAST SYNC v2.0
+# PETZEUSTECH FAST SYNC v2.1
 # Optimized for High-Velocity Node Synchronization
 
 echo "===================================================="
 echo "   PETZEUSTECH ARCHITECT: SYNC SEQUENCE"
 echo "===================================================="
 
-# 1. ENSURE GIT IDENTITY (Prevents commit failures)
+# 1. CONFIGURE IDENTITY
 git config user.email "admin@petzeustech.com"
 git config user.name "Zeus Sync Node"
 
-# 2. ARCHIVE LOCAL STATE
+# 2. STAGE AND COMMIT LOCAL CHANGES
 echo "[1/4] Staging local modifications..."
 git add .
-
-# Check if there are changes to commit
 if ! git diff-index --quiet HEAD --; then
-    echo "Changes detected. Creating archival commit..."
-    git commit -m "System-Sync: Auto-archived local node state $(date +'%Y-%m-%d %H:%M:%S')"
+    echo "Committing local changes..."
+    git commit -m "Node-Sync: Hotfix archived $(date +'%Y-%m-%d %H:%M:%S')"
 else
-    echo "Node state is clean. No local changes to archive."
+    echo "No local changes to commit."
 fi
 
-# 3. PULL UPSTREAM UPDATES
-echo "[2/4] Pulling latest protocols from GitHub..."
-# Using rebase to maintain a linear history and avoid merge bubbles
-git pull origin main --rebase
+# 3. PULL AND MERGE
+echo "[2/4] Pulling latest protocols..."
+# Rebase is cleaner, but if branches have diverged significantly, we use merge
+git pull origin main --no-rebase
 
-# 4. REFRESH INFRASTRUCTURE PERMISSIONS
-echo "[3/4] Calibrating file system permissions..."
+# 4. PERMISSION ALIGNMENT
+echo "[3/4] Calibrating file system..."
 sudo chown -R www-data:www-data .
-sudo chmod +x setup-lemp.sh sync.sh debug-fix.sh deploy.sh
+sudo chmod +x *.sh
 
-# 5. RELOAD LISTENERS
-echo "[4/4] Reloading Nginx service..."
+# 5. REFRESH SERVICES
+echo "[4/4] Reloading system listeners..."
 sudo systemctl reload nginx
+PHP_V=$(php -v | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1,2)
+sudo systemctl restart php${PHP_V}-fpm
 
 echo "===================================================="
-echo "   SYNC COMPLETE. NODE IS UP TO DATE."
+echo "   SYNC COMPLETE. NODE IS STABLE."
 echo "===================================================="
