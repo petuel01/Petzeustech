@@ -1,5 +1,5 @@
 
--- PETZEUSTECH NETWORKS - PRODUCTION SCHEMA v6.1
+-- PETZEUSTECH NETWORKS - PRODUCTION SCHEMA v6.2
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -53,14 +53,16 @@ CREATE TABLE IF NOT EXISTS `files` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Unified Plan Seeding with File Creation Mastery
+-- TRUNCATE TABLE plans; -- Uncomment if you want to clear old plans
 INSERT INTO `plans` (`id`, `name`, `days`, `price`, `network`) VALUES
 ('trial', '24H Trial', 1, 0.00, 'ORANGE'),
 ('basic', 'Basic Tier', 3, 500.00, 'ORANGE'),
 ('standard', 'Standard Tier', 7, 1000.00, 'ORANGE'),
 ('pro', 'Pro Elite', 15, 1500.00, 'ORANGE'),
+('orange_monthly', 'Monthly Unlimited', 30, 2500.00, 'ORANGE'),
 ('mtn_lite', 'MTN Lite', 15, 500.00, 'MTN'),
 ('mtn_monthly', 'MTN Monthly', 30, 1000.00, 'MTN'),
-('master', 'File Creation Mastery', 9999, 15000.00, 'MTN');
+('master', 'File Creation Mastery', 9999, 15000.00, 'ALL')
+ON DUPLICATE KEY UPDATE name=VALUES(name), days=VALUES(days), price=VALUES(price), network=VALUES(network);
 
 SET FOREIGN_KEY_CHECKS = 1;

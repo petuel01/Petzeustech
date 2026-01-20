@@ -124,11 +124,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ user, onGetStarted }) => {
       { id: 'basic', name: 'Basic Tier', days: 3, price: 500, network: 'ORANGE' },
       { id: 'standard', name: 'Standard Tier', days: 7, price: 1000, network: 'ORANGE' },
       { id: 'pro', name: 'Pro Elite', days: 15, price: 1500, network: 'ORANGE' },
+      { id: 'orange_monthly', name: 'Monthly Unlimited', days: 30, price: 2500, network: 'ORANGE' },
     ],
     mtn: [
       { id: 'mtn_lite', name: 'MTN Lite', days: 15, price: 500, network: 'MTN' },
       { id: 'mtn_monthly', name: 'MTN Monthly', days: 30, price: 1000, network: 'MTN' },
-      { id: 'master', name: 'File Creation Mastery', days: 9999, price: 15000, network: 'MTN' }
+    ],
+    mastery: [
+      { id: 'master', name: 'File Creation Mastery', days: 9999, price: 15000, network: 'ALL' }
     ]
   };
 
@@ -150,25 +153,31 @@ const LandingPage: React.FC<LandingPageProps> = ({ user, onGetStarted }) => {
 
   return (
     <div className="flex flex-col pb-24">
-      <section className="px-6 max-w-7xl mx-auto w-full mb-24 pt-16 text-center">
+      <section className="px-6 max-w-7xl mx-auto w-full mb-24 pt-16 text-center animate-fade-in">
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-8">
-          HIGH-SPEED<br/><span className="text-blue-500">NETWORK</span> NODES.
+          PETZEUSTECH<br/><span className="text-blue-500">UNLIMITED</span> NETWORKS
         </h1>
         <p className="text-slate-400 text-lg md:text-xl uppercase font-bold tracking-tight mb-12 max-w-2xl mx-auto leading-relaxed">
-          The ultimate SocksIP resource for Cameroon. <span className="text-white">Manual Verification</span> ensures 100% uptime for all authorized users.
+          ENGINEERED FOR SUPREMACY. WE DELIVER <span className="text-white">HIGH-VELOCITY</span> TUNNELING CONFIGURATIONS OPTIMIZED FOR UNLIMITED BANDWIDTH. OUR ZEUS CORE SYSTEM SYNCHRONIZES SECURE SOCKSIP NODES EVERY 96 HOURS TO ENSURE MAXIMUM THROUGHPUT AND ZERO DOWNTIME.
         </p>
-        <button 
-          onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} 
-          className="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-blue-500 transition-all border-b-4 border-black/20"
-        >
-          Explore Plans
-        </button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <button 
+            onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} 
+            className="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-blue-500 transition-all border-b-4 border-black/20"
+          >
+            EXPLORE PLANS
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">SYSTEM ONLINE</span>
+          </div>
+        </div>
       </section>
 
       <div id="pricing" className="px-6 max-w-7xl mx-auto w-full scroll-mt-32">
         <div className="mb-24">
-          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-10 text-center">Orange Unlimited Tiers</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-10 text-center">ORANGE UNLIMITED TIERS</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             {plans.orange.map((p) => (
               <PlanCard 
                 key={p.id} 
@@ -180,10 +189,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ user, onGetStarted }) => {
           </div>
         </div>
 
-        <div id="mtn">
-          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-10 text-center">MTN Tiers & Mastery</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="mb-24">
+          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-10 text-center">MTN UNLIMITED TIERS</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {plans.mtn.map((p) => (
+              <PlanCard 
+                key={p.id} 
+                plan={p} 
+                onBuy={handleAction} 
+              />
+            ))}
+          </div>
+        </div>
+
+        <div id="mastery">
+          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-10 text-center">ARCHITECT MASTERY (GLOBAL)</h2>
+          <div className="max-w-md mx-auto">
+            {plans.mastery.map((p) => (
               <PlanCard 
                 key={p.id} 
                 plan={p} 
