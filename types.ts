@@ -17,6 +17,8 @@ export interface User {
   email: string;
   role: UserRole;
   status: 'active' | 'blocked';
+  // Added created_at property to support admin dashboard listing and fix TS error
+  created_at?: string;
 }
 
 export interface SubscriptionPlan {
