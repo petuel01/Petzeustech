@@ -158,7 +158,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ user, onGetStarted }) => {
           PETZEUSTECH<br/><span className="text-blue-500">UNLIMITED</span> NETWORKS
         </h1>
         <p className="text-slate-400 text-lg md:text-xl uppercase font-bold tracking-tight mb-12 max-w-2xl mx-auto leading-relaxed">
-          ENGINEERED FOR SUPREMACY. WE DELIVER <span className="text-white">HIGH-VELOCITY</span> TUNNELING CONFIGURATIONS OPTIMIZED FOR UNLIMITED BANDWIDTH. OUR ZEUS CORE SYSTEM SYNCHRONIZES SECURE SOCKSIP NODES EVERY 96 HOURS TO ENSURE MAXIMUM THROUGHPUT AND ZERO DOWNTIME.
+          ENGINEERED FOR SUPREMACY. WE DELIVER <span className="text-white">HIGH-VELOCITY</span> TUNNELING CONFIGURATIONS OPTIMIZED FOR UNLIMITED INTERNET PERFORMANCE. OUR SYSTEM DELIVERS PREMIUM .SIP PAYLOADS BUILT FOR MAXIMUM THROUGHPUT AND ZERO-LATENCY BROWSING.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           <button 

@@ -1,34 +1,37 @@
 #!/bin/bash
-# PETZEUSTECH MASTER DEPLOYER v2.0
-# Target: /var/www/petzeustech
-# Run this from your home directory: bash deploy.sh
+# PETZEUSTECH MASTER DEPLOYER v3.0 (PUBLIC REPO OPTIMIZED)
+# Location: /root/deploy.sh or ~/deploy.sh
+# Purpose: Clean-slate deployment bypassing ownership restrictions.
 
-REPO_URL="https://github.com/YOUR_USERNAME/Petzeustech.git"
+# --- CONFIGURATION ---
+REPO_URL="https://github.com/Petuel99/Petzeustech.git"
 WEB_ROOT="/var/www/petzeustech"
+# ---------------------
 
-echo "------------------------------------------------"
-echo "PETZEUSTECH: COMMENCING HARD RE-CLONE..."
-echo "------------------------------------------------"
+echo "===================================================="
+echo "   PETZEUSTECH ARCHITECT: INITIATING DEPLOYMENT"
+echo "===================================================="
 
-# 1. Purge existing production folder
+# 1. FORCE PURGE
+# Using sudo to override www-data ownership blocks
 if [ -d "$WEB_ROOT" ]; then
-    echo "[1/4] Deleting existing project folder in $WEB_ROOT..."
+    echo "[1/4] Overriding ownership and purging: $WEB_ROOT"
     sudo rm -rf "$WEB_ROOT"
 fi
 
-# 2. Fresh Clone directly to /var/www/
-echo "[2/4] Cloning repository directly into $WEB_ROOT..."
+# 2. PUBLIC CLONE
+echo "[2/4] Pulling fresh infrastructure from Public Repo..."
 sudo git clone "$REPO_URL" "$WEB_ROOT"
 
-# 3. Secure Internal Scripts
-echo "[3/4] Authorizing internal logic..."
+# 3. PERMISSION HANDOFF
+echo "[3/4] Initializing internal script permissions..."
 cd "$WEB_ROOT"
 sudo chmod +x setup-lemp.sh sync.sh
 
-# 4. Trigger Infrastructure Engine
-echo "[4/4] Handing over to Infrastructure Engine..."
+# 4. ENGINE TRIGGER
+echo "[4/4] Executing Infrastructure Engine..."
 sudo ./setup-lemp.sh
 
-echo "------------------------------------------------"
-echo "DEPLOYMENT FINALIZED. PRODUCTION IS LIVE."
-echo "------------------------------------------------"
+echo "===================================================="
+echo "   DEPLOYMENT SUCCESSFUL: TERMINAL IS LIVE"
+echo "===================================================="
